@@ -22,6 +22,7 @@ const logout = () => {
     localStorage.removeItem('user')
 }
 
+
 buttonAuth.addEventListener('click', () => {
     modalAuth.style.display = 'flex'
 })
@@ -43,6 +44,6 @@ logInForm.addEventListener('submit', (e) => {
     login(user)
 })
 
-if (localStorage.getItem('user')) {
-    console.log(JSON.parse(localStorage.getItem('user')))
-}
+    //console.log(JSON.parse(localStorage.getItem('user')))
+    
+    
