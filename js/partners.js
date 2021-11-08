@@ -1,17 +1,10 @@
-const cardRestaurants = document.querySelector(".cards-restaurants");
-
-const renderItems = (data) => {
-  data.forEach(
-    (item) => {
-		const  {
-      image,
-      kitchen,
-      name,
-      price,
-      products,
-      stars,
-      time_of_delivery,
-    } = item;
+const partners = () => {
+  const cardRestaurants = document.querySelector(".cards-restaurants");
+const modalAuth = document.querySelector(".modal-auth");
+  const renderItems = (data) => {
+    data.forEach((item) => {
+      const { image, kitchen, name, price, products, stars, time_of_delivery } =
+        item;
 
       const a = document.createElement("a");
       a.setAttribute("href", "/restaurant.html");
@@ -33,31 +26,32 @@ const renderItems = (data) => {
 								<div class="category">${kitchen}</div>
 							</div>
 						</div>`;
-	  a.addEventListener('click',(e) => {
-		  if (!localStorage.getItem("user")) {
-			  e.preventDefault()
-        	modalAuth.style.display = "flex";
-		} else {
-			e.preventDefault();
-			console.log(item);
-			localStorage.setItem("restaurant", JSON.stringify(item));
-			window.location.href = "/restaurant.html";
-			
-		}
-		
-	  })
-	  
-      cardRestaurants.append(a);
-    }
-  );
-};
+      a.addEventListener("click", (e) => {
+        if (!localStorage.getItem("user")) {
+          e.preventDefault();
+          modalAuth.style.display = "flex";
+        } else {
+          e.preventDefault();
+          console.log(item);
+          localStorage.setItem("restaurant", JSON.stringify(item));
+          window.location.href = "/restaurant.html";
+          login(user);
+        }
+      });
 
-fetch("https://test-95a60-default-rtdb.firebaseio.com/db/partners.json")
-  .then((response) => response.json())
-  .then((data) => {
-    renderItems(data);
-    console.log(data);
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+      cardRestaurants.append(a);
+    });
+  };
+
+  fetch("https://test-95a60-default-rtdb.firebaseio.com/db/partners.json")
+    .then((response) => response.json())
+    .then((data) => {
+      renderItems(data);
+      console.log(data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+}
+partners()

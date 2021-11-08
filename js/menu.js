@@ -1,20 +1,38 @@
-const cardsMenu = document.querySelector('.cards-menu')
+const menu = () => {
+  const cardsMenu = document.querySelector(".cards-menu");
+  const cartArray = localStorage.getItem('cart') ? 
+    JSON.parse(localStorage.getItem('cart')) :[]
 
-const changeTitle = (restaurant) => {
-  const restaurantTitle = document.querySelector(".restaurant-title");
-  const rating = document.querySelector(".rating");
-  const price = document.querySelector(".price");
-  const category = document.querySelector(".category");
-  restaurantTitle.textContent = restaurant.name
-  rating.textContent = restaurant.stars
-  price.textContent =  `От ${restaurant.price} ₽`
-  category.textContent = restaurant.kitchen
-}
-const renderItems = (data) => {
-  data.forEach(({description, id, image, name, price}) => {
-    const card = document.createElement('div')
-    card.classList.add('card')
-    card.innerHTML = `<img src="${image}" alt="${name}" class="card-image" />
+  const addToCart = (cartItem) => {
+    if (cartArray.some((item) => item.id === cartItem.id)) {
+      cartArray.map((item) => {
+        if (item.id === cartItem.id) {
+          item.count++
+        }
+        return item
+      })
+    } else {
+      cartArray.push(cartItem);
+    }
+    
+    localStorage.setItem('cart', JSON.stringify(cartArray))
+  };
+
+  const changeTitle = (restaurant) => {
+    const restaurantTitle = document.querySelector(".restaurant-title");
+    const rating = document.querySelector(".rating");
+    const price = document.querySelector(".price");
+    const category = document.querySelector(".category");
+    restaurantTitle.textContent = restaurant.name;
+    rating.textContent = restaurant.stars;
+    price.textContent = `От ${restaurant.price} ₽`;
+    category.textContent = restaurant.kitchen;
+  };
+  const renderItems = (data) => {
+    data.forEach(({ description, id, image, name, price }) => {
+      const card = document.createElement("div");
+      card.classList.add("card");
+      card.innerHTML = `<img src="${image}" alt="${name}" class="card-image" />
                         <div class="card-text">
                           <div class="card-heading">
                             <h3 class="card-title card-title-reg">${name}</h3>
@@ -33,20 +51,28 @@ const renderItems = (data) => {
                             <strong class="card-price-bold">${price} ₽</strong>
                           </div>
                         </div>`;
-                        cardsMenu.append(card)
-  })
-};
+                        card.querySelector(".button-card-text").addEventListener('click', () => {
+                          
+                            addToCart({ name, price, id, count: 1 });
+                            
+                        })
+                        
+      cardsMenu.append(card);
+    });
+  };
 
-if(localStorage.getItem('restaurant')) {
+  if (localStorage.getItem("restaurant")) {
+    const restaurant = JSON.parse(localStorage.getItem("restaurant"));
+    console.log(restaurant);
+    changeTitle(restaurant);
+    fetch(`./db/${restaurant.products}`)
+      .then((response) => response.json())
+      .then((data) => renderItems(data))
+      .catch((error) => console.log(error));
+  } else {
+    window.location.href = "/";
+  }
 
-  const restaurant = JSON.parse(localStorage.getItem("restaurant"))
-  console.log(restaurant)
-  changeTitle(restaurant)
-  fetch(`./db/${restaurant.products}`)
-    .then((response) => response.json())
-    .then((data) => renderItems(data))
-    .catch((error) => console.log(error));
-} else {
-  window.location.href = '/'
+
 }
-
+menu()
